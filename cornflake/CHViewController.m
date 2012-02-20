@@ -10,7 +10,7 @@
 
 @implementation CHViewController
 
-@synthesize button;
+@synthesize button, receiver;
 
 - (IBAction)didTapButton:(id)sender {
     UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Hello" message:@"Totally" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
@@ -48,6 +48,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
+    [self.receiver startCapturing];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -58,12 +59,29 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
+    [self.receiver stopCapturing];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+}
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    if(!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
+        return nil;
+    }
+    
+    receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:nil];
+    return self;
+}
+
+- (void)dealloc {
+    [receiver release];
+    [button release];
+    [super dealloc];
 }
 
 @end

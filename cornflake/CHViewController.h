@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CHAudioReceiver.h"
 
 @interface CHViewController : UIViewController
 
+@property (nonatomic,retain) CHAudioReceiver* receiver;
 
 @property (nonatomic,retain) IBOutlet UIButton* button; 
 

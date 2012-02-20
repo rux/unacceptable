@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		199B63C314F269350054A927 /* CHAudioTransmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B63C214F269350054A927 /* CHAudioTransmitter.m */; };
+		199B63C614F2694E0054A927 /* CHAudioReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B63C514F2694E0054A927 /* CHAudioReceiver.m */; };
+		199B63C814F26EBD0054A927 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 199B63C714F26EBD0054A927 /* AVFoundation.framework */; };
+		199B63CA14F26F350054A927 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 199B63C914F26F350054A927 /* Accelerate.framework */; };
+		199B63CC14F270340054A927 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 199B63CB14F270340054A927 /* CoreMedia.framework */; };
 		CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F514F2614800406F31 /* UIKit.framework */; };
 		CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F714F2614800406F31 /* Foundation.framework */; };
 		CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F914F2614800406F31 /* CoreGraphics.framework */; };
@@ -18,6 +23,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		199B63C114F269350054A927 /* CHAudioTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAudioTransmitter.h; sourceTree = "<group>"; };
+		199B63C214F269350054A927 /* CHAudioTransmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAudioTransmitter.m; sourceTree = "<group>"; };
+		199B63C414F2694E0054A927 /* CHAudioReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAudioReceiver.h; sourceTree = "<group>"; };
+		199B63C514F2694E0054A927 /* CHAudioReceiver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAudioReceiver.m; sourceTree = "<group>"; };
+		199B63C714F26EBD0054A927 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		199B63C914F26F350054A927 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
+		199B63CB14F270340054A927 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		CE8CD4F114F2614700406F31 /* cornflake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cornflake.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8CD4F514F2614800406F31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		CE8CD4F714F2614800406F31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -38,6 +50,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				199B63CC14F270340054A927 /* CoreMedia.framework in Frameworks */,
+				199B63CA14F26F350054A927 /* Accelerate.framework in Frameworks */,
+				199B63C814F26EBD0054A927 /* AVFoundation.framework in Frameworks */,
 				CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */,
 				CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */,
 				CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */,
@@ -67,6 +82,9 @@
 		CE8CD4F414F2614800406F31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				199B63CB14F270340054A927 /* CoreMedia.framework */,
+				199B63C914F26F350054A927 /* Accelerate.framework */,
+				199B63C714F26EBD0054A927 /* AVFoundation.framework */,
 				CE8CD4F514F2614800406F31 /* UIKit.framework */,
 				CE8CD4F714F2614800406F31 /* Foundation.framework */,
 				CE8CD4F914F2614800406F31 /* CoreGraphics.framework */,
@@ -82,6 +100,10 @@
 				CE8CD50714F2614800406F31 /* CHViewController.h */,
 				CE8CD50814F2614800406F31 /* CHViewController.m */,
 				CE8CD50A14F2614800406F31 /* CHViewController.xib */,
+				199B63C414F2694E0054A927 /* CHAudioReceiver.h */,
+				199B63C514F2694E0054A927 /* CHAudioReceiver.m */,
+				199B63C114F269350054A927 /* CHAudioTransmitter.h */,
+				199B63C214F269350054A927 /* CHAudioTransmitter.m */,
 				CE8CD4FC14F2614800406F31 /* Supporting Files */,
 			);
 			path = cornflake;
@@ -163,6 +185,8 @@
 				CE8CD50214F2614800406F31 /* main.m in Sources */,
 				CE8CD50614F2614800406F31 /* CHAppDelegate.m in Sources */,
 				CE8CD50914F2614800406F31 /* CHViewController.m in Sources */,
+				199B63C314F269350054A927 /* CHAudioTransmitter.m in Sources */,
+				199B63C614F2694E0054A927 /* CHAudioReceiver.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +296,7 @@
 				CE8CD51114F2614800406F31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
