@@ -10,4 +10,9 @@
 
 @interface CHViewController : UIViewController
 
+
+@property (nonatomic,retain) IBOutlet UIButton* button; 
+
+- (IBAction)didTapButton:(id)sender;
+
 @end

@@ -22,13 +22,13 @@
 		CE8CD4F514F2614800406F31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		CE8CD4F714F2614800406F31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		CE8CD4F914F2614800406F31 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */ = {isa = PBXFileReference; path = "cornflake-Info.plist"; sourceTree = "<group>"; };
+		CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "cornflake-Info.plist"; sourceTree = "<group>"; };
 		CE8CD4FF14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CE8CD50114F2614800406F31 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CE8CD50314F2614800406F31 /* cornflake-Prefix.pch */ = {isa = PBXFileReference; path = "cornflake-Prefix.pch"; sourceTree = "<group>"; };
-		CE8CD50414F2614800406F31 /* CHAppDelegate.h */ = {isa = PBXFileReference; path = CHAppDelegate.h; sourceTree = "<group>"; };
+		CE8CD50314F2614800406F31 /* cornflake-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cornflake-Prefix.pch"; sourceTree = "<group>"; };
+		CE8CD50414F2614800406F31 /* CHAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHAppDelegate.h; sourceTree = "<group>"; };
 		CE8CD50514F2614800406F31 /* CHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHAppDelegate.m; sourceTree = "<group>"; };
-		CE8CD50714F2614800406F31 /* CHViewController.h */ = {isa = PBXFileReference; path = CHViewController.h; sourceTree = "<group>"; };
+		CE8CD50714F2614800406F31 /* CHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHViewController.h; sourceTree = "<group>"; };
 		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */

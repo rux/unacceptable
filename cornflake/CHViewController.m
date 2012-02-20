@@ -10,6 +10,14 @@
 
 @implementation CHViewController
 
+@synthesize button;
+
+- (IBAction)didTapButton:(id)sender {
+    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Hello" message:@"Totally" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
+    [alert show];
+}
+
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -27,6 +35,7 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
+    self.button = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
 }
