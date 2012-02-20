@@ -20,6 +20,9 @@
 		CE8CD50614F2614800406F31 /* CHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50514F2614800406F31 /* CHAppDelegate.m */; };
 		CE8CD50914F2614800406F31 /* CHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50814F2614800406F31 /* CHViewController.m */; };
 		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
+		CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD51214F26B8300406F31 /* AudioToolbox.framework */; };
+		CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51414F2711700406F31 /* cheer.mp3 */; };
+		CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51614F2712F00406F31 /* cheer.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +46,9 @@
 		CE8CD50714F2614800406F31 /* CHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHViewController.h; sourceTree = "<group>"; };
 		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
+		CE8CD51214F26B8300406F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		CE8CD51414F2711700406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
+		CE8CD51614F2712F00406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +118,8 @@
 		CE8CD4FC14F2614800406F31 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CE8CD51614F2712F00406F31 /* cheer.mp3 */,
+				CE8CD51414F2711700406F31 /* cheer.mp3 */,
 				CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */,
 				CE8CD4FE14F2614800406F31 /* InfoPlist.strings */,
 				CE8CD50114F2614800406F31 /* main.m */,
@@ -172,6 +180,8 @@
 			files = (
 				CE8CD50014F2614800406F31 /* InfoPlist.strings in Resources */,
 				CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */,
+				CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */,
+				CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,17 @@
 @synthesize button, receiver;
 
 - (IBAction)didTapButton:(id)sender {
+
+
+    CFBundleRef mainBundle = CFBundleGetMainBundle();
+    CFURLRef soundFileURLRef;
+    soundFileURLRef = CFBundleCopyResourceURL(mainBundle, (CFStringRef)  @"cheer", CFSTR ("mp3"), NULL);
+    UInt32 soundID;
+    AudioServicesCreateSystemSoundID(soundFileURLRef, &soundID);
+    AudioServicesPlaySystemSound(soundID);
+
+
+
     UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Hello" message:@"Totally" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
     [alert show];
 }
