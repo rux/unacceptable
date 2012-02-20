@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE5B34E414F27BBB00F2B5A1 /* 880-1760-0.1second.caf in Resources */ = {isa = PBXBuildFile; fileRef = CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */; };
 		199B63C314F269350054A927 /* CHAudioTransmitter.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B63C214F269350054A927 /* CHAudioTransmitter.m */; };
 		199B63C614F2694E0054A927 /* CHAudioReceiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 199B63C514F2694E0054A927 /* CHAudioReceiver.m */; };
 		199B63C814F26EBD0054A927 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 199B63C714F26EBD0054A927 /* AVFoundation.framework */; };
@@ -21,11 +22,11 @@
 		CE8CD50914F2614800406F31 /* CHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50814F2614800406F31 /* CHViewController.m */; };
 		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
 		CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD51214F26B8300406F31 /* AudioToolbox.framework */; };
-		CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51414F2711700406F31 /* cheer.mp3 */; };
 		CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51614F2712F00406F31 /* cheer.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "880-1760-0.1second.caf"; sourceTree = "<group>"; };
 		199B63C114F269350054A927 /* CHAudioTransmitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAudioTransmitter.h; sourceTree = "<group>"; };
 		199B63C214F269350054A927 /* CHAudioTransmitter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHAudioTransmitter.m; sourceTree = "<group>"; };
 		199B63C414F2694E0054A927 /* CHAudioReceiver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHAudioReceiver.h; sourceTree = "<group>"; };
@@ -47,7 +48,6 @@
 		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
 		CE8CD51214F26B8300406F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		CE8CD51414F2711700406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
 		CE8CD51614F2712F00406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -120,8 +120,8 @@
 		CE8CD4FC14F2614800406F31 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */,
 				CE8CD51614F2712F00406F31 /* cheer.mp3 */,
-				CE8CD51414F2711700406F31 /* cheer.mp3 */,
 				CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */,
 				CE8CD4FE14F2614800406F31 /* InfoPlist.strings */,
 				CE8CD50114F2614800406F31 /* main.m */,
@@ -182,8 +182,8 @@
 			files = (
 				CE8CD50014F2614800406F31 /* InfoPlist.strings in Resources */,
 				CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */,
-				CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */,
 				CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */,
+				CE5B34E414F27BBB00F2B5A1 /* 880-1760-0.1second.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,3 +13,8 @@ build/*
 xcuserdata
 profile
 *.moved-aside
+
+
+
+#don't check in master .psd files, as they're kinda a waste of space
+*.psd
