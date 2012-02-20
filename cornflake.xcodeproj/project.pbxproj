@@ -1,0 +1,279 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F514F2614800406F31 /* UIKit.framework */; };
+		CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F714F2614800406F31 /* Foundation.framework */; };
+		CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F914F2614800406F31 /* CoreGraphics.framework */; };
+		CE8CD50014F2614800406F31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD4FE14F2614800406F31 /* InfoPlist.strings */; };
+		CE8CD50214F2614800406F31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50114F2614800406F31 /* main.m */; };
+		CE8CD50614F2614800406F31 /* CHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50514F2614800406F31 /* CHAppDelegate.m */; };
+		CE8CD50914F2614800406F31 /* CHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50814F2614800406F31 /* CHViewController.m */; };
+		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CE8CD4F114F2614700406F31 /* cornflake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cornflake.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE8CD4F514F2614800406F31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		CE8CD4F714F2614800406F31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CE8CD4F914F2614800406F31 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */ = {isa = PBXFileReference; path = "cornflake-Info.plist"; sourceTree = "<group>"; };
+		CE8CD4FF14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CE8CD50114F2614800406F31 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CE8CD50314F2614800406F31 /* cornflake-Prefix.pch */ = {isa = PBXFileReference; path = "cornflake-Prefix.pch"; sourceTree = "<group>"; };
+		CE8CD50414F2614800406F31 /* CHAppDelegate.h */ = {isa = PBXFileReference; path = CHAppDelegate.h; sourceTree = "<group>"; };
+		CE8CD50514F2614800406F31 /* CHAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHAppDelegate.m; sourceTree = "<group>"; };
+		CE8CD50714F2614800406F31 /* CHViewController.h */ = {isa = PBXFileReference; path = CHViewController.h; sourceTree = "<group>"; };
+		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
+		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CE8CD4EE14F2614700406F31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */,
+				CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */,
+				CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CE8CD4E614F2614700406F31 = {
+			isa = PBXGroup;
+			children = (
+				CE8CD4FB14F2614800406F31 /* cornflake */,
+				CE8CD4F414F2614800406F31 /* Frameworks */,
+				CE8CD4F214F2614700406F31 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CE8CD4F214F2614700406F31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CE8CD4F114F2614700406F31 /* cornflake.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CE8CD4F414F2614800406F31 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CE8CD4F514F2614800406F31 /* UIKit.framework */,
+				CE8CD4F714F2614800406F31 /* Foundation.framework */,
+				CE8CD4F914F2614800406F31 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CE8CD4FB14F2614800406F31 /* cornflake */ = {
+			isa = PBXGroup;
+			children = (
+				CE8CD50414F2614800406F31 /* CHAppDelegate.h */,
+				CE8CD50514F2614800406F31 /* CHAppDelegate.m */,
+				CE8CD50714F2614800406F31 /* CHViewController.h */,
+				CE8CD50814F2614800406F31 /* CHViewController.m */,
+				CE8CD50A14F2614800406F31 /* CHViewController.xib */,
+				CE8CD4FC14F2614800406F31 /* Supporting Files */,
+			);
+			path = cornflake;
+			sourceTree = "<group>";
+		};
+		CE8CD4FC14F2614800406F31 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */,
+				CE8CD4FE14F2614800406F31 /* InfoPlist.strings */,
+				CE8CD50114F2614800406F31 /* main.m */,
+				CE8CD50314F2614800406F31 /* cornflake-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CE8CD4F014F2614700406F31 /* cornflake */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE8CD50F14F2614800406F31 /* Build configuration list for PBXNativeTarget "cornflake" */;
+			buildPhases = (
+				CE8CD4ED14F2614700406F31 /* Sources */,
+				CE8CD4EE14F2614700406F31 /* Frameworks */,
+				CE8CD4EF14F2614700406F31 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = cornflake;
+			productName = cornflake;
+			productReference = CE8CD4F114F2614700406F31 /* cornflake.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CE8CD4E814F2614700406F31 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = CE8CD4EB14F2614700406F31 /* Build configuration list for PBXProject "cornflake" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = CE8CD4E614F2614700406F31;
+			productRefGroup = CE8CD4F214F2614700406F31 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CE8CD4F014F2614700406F31 /* cornflake */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CE8CD4EF14F2614700406F31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE8CD50014F2614800406F31 /* InfoPlist.strings in Resources */,
+				CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CE8CD4ED14F2614700406F31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE8CD50214F2614800406F31 /* main.m in Sources */,
+				CE8CD50614F2614800406F31 /* CHAppDelegate.m in Sources */,
+				CE8CD50914F2614800406F31 /* CHViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		CE8CD4FE14F2614800406F31 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE8CD4FF14F2614800406F31 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CE8CD50A14F2614800406F31 /* CHViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE8CD50B14F2614800406F31 /* en */,
+			);
+			name = CHViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CE8CD50D14F2614800406F31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		CE8CD50E14F2614800406F31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CE8CD51014F2614800406F31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "cornflake/cornflake-Prefix.pch";
+				INFOPLIST_FILE = "cornflake/cornflake-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		CE8CD51114F2614800406F31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "cornflake/cornflake-Prefix.pch";
+				INFOPLIST_FILE = "cornflake/cornflake-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CE8CD4EB14F2614700406F31 /* Build configuration list for PBXProject "cornflake" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE8CD50D14F2614800406F31 /* Debug */,
+				CE8CD50E14F2614800406F31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE8CD50F14F2614800406F31 /* Build configuration list for PBXNativeTarget "cornflake" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE8CD51014F2614800406F31 /* Debug */,
+				CE8CD51114F2614800406F31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CE8CD4E814F2614700406F31 /* Project object */;
+}
