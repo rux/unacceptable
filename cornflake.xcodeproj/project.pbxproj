@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE5B34E414F27BBB00F2B5A1 /* 880-1760-0.1second.caf in Resources */ = {isa = PBXBuildFile; fileRef = CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */; };
 		CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F514F2614800406F31 /* UIKit.framework */; };
 		CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F714F2614800406F31 /* Foundation.framework */; };
 		CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD4F914F2614800406F31 /* CoreGraphics.framework */; };
@@ -16,11 +17,11 @@
 		CE8CD50914F2614800406F31 /* CHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50814F2614800406F31 /* CHViewController.m */; };
 		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
 		CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD51214F26B8300406F31 /* AudioToolbox.framework */; };
-		CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51414F2711700406F31 /* cheer.mp3 */; };
 		CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51614F2712F00406F31 /* cheer.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "880-1760-0.1second.caf"; sourceTree = "<group>"; };
 		CE8CD4F114F2614700406F31 /* cornflake.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cornflake.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE8CD4F514F2614800406F31 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		CE8CD4F714F2614800406F31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -35,7 +36,6 @@
 		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
 		CE8CD51214F26B8300406F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		CE8CD51414F2711700406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
 		CE8CD51614F2712F00406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -98,8 +98,8 @@
 		CE8CD4FC14F2614800406F31 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CE5B34E314F27BBB00F2B5A1 /* 880-1760-0.1second.caf */,
 				CE8CD51614F2712F00406F31 /* cheer.mp3 */,
-				CE8CD51414F2711700406F31 /* cheer.mp3 */,
 				CE8CD4FD14F2614800406F31 /* cornflake-Info.plist */,
 				CE8CD4FE14F2614800406F31 /* InfoPlist.strings */,
 				CE8CD50114F2614800406F31 /* main.m */,
@@ -160,8 +160,8 @@
 			files = (
 				CE8CD50014F2614800406F31 /* InfoPlist.strings in Resources */,
 				CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */,
-				CE8CD51514F2711700406F31 /* cheer.mp3 in Resources */,
 				CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */,
+				CE5B34E414F27BBB00F2B5A1 /* 880-1760-0.1second.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +284,7 @@
 				CE8CD51114F2614800406F31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
