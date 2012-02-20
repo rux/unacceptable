@@ -15,6 +15,7 @@
 		CE8CD50614F2614800406F31 /* CHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50514F2614800406F31 /* CHAppDelegate.m */; };
 		CE8CD50914F2614800406F31 /* CHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8CD50814F2614800406F31 /* CHViewController.m */; };
 		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
+		CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD51214F26B8300406F31 /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		CE8CD50714F2614800406F31 /* CHViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHViewController.h; sourceTree = "<group>"; };
 		CE8CD50814F2614800406F31 /* CHViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CHViewController.m; sourceTree = "<group>"; };
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
+		CE8CD51214F26B8300406F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */,
 				CE8CD4F614F2614800406F31 /* UIKit.framework in Frameworks */,
 				CE8CD4F814F2614800406F31 /* Foundation.framework in Frameworks */,
 				CE8CD4FA14F2614800406F31 /* CoreGraphics.framework in Frameworks */,
@@ -67,6 +70,7 @@
 		CE8CD4F414F2614800406F31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CE8CD51214F26B8300406F31 /* AudioToolbox.framework */,
 				CE8CD4F514F2614800406F31 /* UIKit.framework */,
 				CE8CD4F714F2614800406F31 /* Foundation.framework */,
 				CE8CD4F914F2614800406F31 /* CoreGraphics.framework */,

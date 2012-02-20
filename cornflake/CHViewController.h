@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#import <AudioToolbox/AudioToolbox.h>
+
 @interface CHViewController : UIViewController
 
 
