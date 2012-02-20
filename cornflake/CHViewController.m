@@ -22,7 +22,6 @@
     AudioServicesCreateSystemSoundID(soundFileURLRef, &soundID);
     AudioServicesPlaySystemSound(soundID);
 
-    // self.view.backgroundColor = [UIColor redColor];
 
     [UIView animateWithDuration:1
         animations:^{
@@ -39,8 +38,6 @@
         }];
     
 
-    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Hello" message:@"Totally" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
-    [alert show];
 }
 
 
