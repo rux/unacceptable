@@ -6,17 +6,22 @@
 //  Copyright (c) 2012 Yell Group Plc. All rights reserved.
 //
 
+#import <AudioToolbox/AudioToolbox.h>
+#import <Accelerate/Accelerate.h>
 #import "CHAudioReceiver.h"
+
+static AudioBufferList audioSearchBufferList;
+static vDSP_Length audioSearchBufferLength;
 
 @implementation CHAudioReceiver
 
-@synthesize captureSession, audioToLookFor, sampleQueue;
+@synthesize captureSession, sampleQueue;
 
-- (id)initWithAudioToLookFor:(NSData*)aAudioToLookFor {
+- (id)initWithAudioToLookFor:(NSURL*)audioURL {
+    NSAssert(audioURL, @"Audio not supplied");
     if(!(self = [super init])) {
         return nil;
     }
-    audioToLookFor = [aAudioToLookFor retain];
     
     captureSession = [[AVCaptureSession alloc] init];
     
@@ -25,7 +30,8 @@
 
     NSError* micError = nil;
     AVCaptureDeviceInput* micInput = [AVCaptureDeviceInput deviceInputWithDevice:preferredMic error:&micError];
-    if(!micInput) {
+    if(!micInput || ![captureSession canAddInput:micInput]) {
+        [captureSession release];
         NSLog(@"Failed mic with error %@ ", micError);
         [self release], self = nil;
         return nil;
@@ -38,12 +44,85 @@
     [captureSession addOutput:dataOutput];
     [dataOutput release];
     
+    // Extract the audio 
+    ExtAudioFileRef audioFile;
+    OSStatus fileAccessError = ExtAudioFileOpenURL((CFURLRef)audioURL, &audioFile);
+    if(fileAccessError != noErr) {
+        NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileAccessError);
+        [captureSession release];
+        [self release], self = nil;
+        return nil;
+    }
+        
+    AudioStreamBasicDescription inputFormat;
+    UInt32 inputFormatSize = sizeof(inputFormat);
+    ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileDataFormat, &inputFormatSize, &inputFormat);
+    
+    SInt64 numPackets;
+    size_t numPacketsPropertySize = sizeof(numPackets);
+    const OSStatus lengthStatus = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &numPacketsPropertySize, &numPackets);
+    if(lengthStatus != noErr) {
+        NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, lengthStatus);
+        [captureSession release];
+        [self release], self = nil;
+        return nil;        
+    }
+
+    
+    AudioStreamBasicDescription format = inputFormat;
+    format.mFormatFlags = kAudioFormatFlagIsFloat;
+    format.mBitsPerChannel = sizeof(float)*8;
+    format.mBytesPerFrame = format.mChannelsPerFrame * sizeof(float);
+    format.mBytesPerPacket = format.mFramesPerPacket * format.mBytesPerFrame;
+
+    OSStatus fileRetrievalError = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(format), &format);
+    if(fileRetrievalError != noErr) {
+        NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileRetrievalError);
+        [captureSession release];
+        [self release], self = nil;
+        return nil;        
+    }
+    
+    float* audioSearchBuffer = (float*)calloc(numPackets, sizeof(float));
+    
+    audioSearchBufferLength = numPackets;
+    audioSearchBufferList.mNumberBuffers = 1;
+    audioSearchBufferList.mBuffers[0].mNumberChannels = 1; 
+    audioSearchBufferList.mBuffers[0].mDataByteSize = numPackets * sizeof(float);
+    audioSearchBufferList.mBuffers[0].mData = audioSearchBuffer;
+    
+    ExtAudioFileSeek(audioFile, 0);
+    UInt32 totalFramesRead = 0;
+    do {
+        UInt32 framesRead = numPackets - totalFramesRead;
+        audioSearchBufferList.mBuffers[0].mData = audioSearchBuffer + (totalFramesRead * (sizeof(float)));
+        OSStatus readError = ExtAudioFileRead(audioFile, &framesRead, &audioSearchBufferList);
+        if(readError != noErr) {
+            NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, readError);
+            ExtAudioFileDispose(audioFile);
+            [captureSession release];
+            [self release], self = nil;
+            return nil;        
+        }
+        totalFramesRead += framesRead;
+        if(framesRead == 0) {
+            break;
+        }
+    } while (totalFramesRead < numPackets);
+    
+    ExtAudioFileDispose(audioFile);
+
     return self;
 }
 
+- (id)init {
+    return [self initWithAudioToLookFor:nil];
+}
+
 - (void)dealloc {
-    dispatch_release(sampleQueue);
-    [audioToLookFor release];
+    if(sampleQueue) {
+        dispatch_release(sampleQueue);
+    }
     [captureSession release];
     [super dealloc];
 }
@@ -59,52 +138,44 @@
 
 #pragma mark - Process audio
 
-- (SInt16)maxValueInArray:(SInt16*)array ofSize:(NSUInteger)size {
-    SInt16 biggestSample = 0;
-    for(NSUInteger sampleIndex=0; sampleIndex<size; sampleIndex++) {
-        if(abs(array[sampleIndex]) > biggestSample) {
-            biggestSample = abs(array[sampleIndex]);
-        }
-    }
-    return biggestSample;
-}
-
-- (float)calculateAudioLevel:(CMSampleBufferRef)sampleBuffer {
-	float currentAudioLevel = 0.0f;
-    
-	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
-	NSUInteger channelIndex = 0;
-	
-	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-	size_t audioBlockBufferOffset = (channelIndex * numSamples * sizeof(SInt16));
-	size_t lengthAtOffset = 0;
-	size_t totalLength = 0;
-	SInt16 *samples = NULL;
-	CMBlockBufferGetDataPointer(audioBlockBuffer, audioBlockBufferOffset, &lengthAtOffset, &totalLength, (char **)(&samples));
-	
-	int numSamplesToRead = 1;
-    
-	for (int i = 0; i < numSamplesToRead; i++) {
-		
-		SInt16 subSet[numSamples / numSamplesToRead];
-		for (int j = 0; j < numSamples / numSamplesToRead; j++)
-			subSet[j] = samples[(i * (numSamples / numSamplesToRead)) + j];
-		
-		const SInt16 lastAudioSample = [self maxValueInArray:subSet ofSize:(numSamples / numSamplesToRead)];
-		currentAudioLevel = (float)(lastAudioSample) / 32767.0;
-	}
-	return currentAudioLevel;
-}
-
-#pragma mark - 
+#pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    const float maxValue = [self calculateAudioLevel:sampleBuffer];
-    if(maxValue > 0.2f) {
+	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
+	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+
+    // Obtain the raw sample data as a float array, readySamples.
+	size_t lengthAtOffset = 0;
+	size_t totalLength = 0;
+	SInt16* rawSamples = NULL;
+	CMBlockBufferGetDataPointer(audioBlockBuffer, 0, &lengthAtOffset, &totalLength, (char**)(&rawSamples));
+    float* readySamples = calloc(numSamples, sizeof(float));
+    vDSP_vflt16(rawSamples, 1, readySamples, 1, numSamples);
+    float* normedSamples = calloc(numSamples, sizeof(float));
+    float divisor = 32767.f;
+    vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
+    
+    // Prepare space for the correlated result.    
+    const vDSP_Length correlatedResultLength = audioSearchBufferLength + numSamples - 1;
+    float* correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
+
+    // Correlate the two signals
+    vDSP_conv(normedSamples, 1, audioSearchBufferList.mBuffers[0].mData, 1, correlatedResult, 1, correlatedResultLength, audioSearchBufferLength);
+        
+    // Find the maximum and its index
+    float maximumValue;
+    vDSP_Length indexOfMaximumValue;
+    vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, correlatedResultLength);
+//    vDSP_maxvi(readySamples, 1, &maximumValue, &indexOfMaximumValue, numSamples);
+//    vDSP_maxvi(audioSearchBufferList.mBuffers[0].mData, 1, &maximumValue, &indexOfMaximumValue, audioSearchBufferLength);
+    
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"Sound level %f", maxValue);
+            NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
         });    
-    }
+    
+    free(correlatedResult);
+    free(readySamples);
+    free(normedSamples);
 }
 
      

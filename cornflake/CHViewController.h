@@ -8,12 +8,14 @@
 
 #import <UIKit/UIKit.h>
 #import "CHAudioReceiver.h"
+#import "CHAudioTransmitter.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 
 @interface CHViewController : UIViewController
 
 @property (nonatomic,retain) CHAudioReceiver* receiver;
+@property (nonatomic,retain) CHAudioTransmitter* transmitter;
 
 @property (nonatomic,retain) IBOutlet UIButton* button; 
 

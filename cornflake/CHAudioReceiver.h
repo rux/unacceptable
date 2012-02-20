@@ -11,10 +11,9 @@
 @interface CHAudioReceiver : NSObject <AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (nonatomic,retain) AVCaptureSession* captureSession;
-@property (nonatomic,retain) NSData* audioToLookFor;
 @property (nonatomic) dispatch_queue_t sampleQueue;
 
-- (id)initWithAudioToLookFor:(NSData*)audioToLookFor;
+- (id)initWithAudioToLookFor:(NSURL*)audioToLookFor;
 
 - (void)startCapturing;
 - (void)stopCapturing;
