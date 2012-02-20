@@ -24,13 +24,20 @@
 
     // self.view.backgroundColor = [UIColor redColor];
 
-    [UIView animateWithDuration:2 animations:^{
-        if ([self.view.backgroundColor isEqual:[UIColor redColor]]) {
-            self.view.backgroundColor = [UIColor greenColor];
-        } else {
-            self.view.backgroundColor = [UIColor redColor];
-        } 
-    }];
+    [UIView animateWithDuration:1
+        animations:^{
+            if (![self.view.backgroundColor isEqual:[UIColor whiteColor]]) {
+            self.view.backgroundColor = [UIColor whiteColor];
+            } else {
+            self.view.backgroundColor = [UIColor blackColor];
+            } 
+        }
+        completion:^(BOOL finished) {
+            [UIView animateWithDuration:3 animations:^{
+                self.view.backgroundColor = [UIColor blackColor];
+            }];
+        }];
+    
 
     UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:@"Hello" message:@"Totally" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
     [alert show];
