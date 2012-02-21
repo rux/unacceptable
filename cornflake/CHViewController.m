@@ -22,6 +22,7 @@
     AudioServicesCreateSystemSoundID(soundFileURLRef, &soundID);
     AudioServicesPlaySystemSound(soundID);
 
+    AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
 
     [UIView animateWithDuration:1
         animations:^{
