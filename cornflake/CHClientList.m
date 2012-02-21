@@ -62,7 +62,7 @@ NSString* const CHClientListTriggeredNotification = @"CHClientListTriggeredNotif
         NSDate* date = [now dateByAddingTimeInterval:oneDelay];
         NSData* dateArchive = [NSKeyedArchiver archivedDataWithRootObject:date];
         [self.serverSession sendData:dateArchive toPeers:[NSArray arrayWithObject:key] withDataMode:GKSendDataReliable error:nil];
-        oneDelay += 0.5;
+        oneDelay += 0.5; // delay between
     }];
         
 }
