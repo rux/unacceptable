@@ -79,14 +79,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    self.clientList.isCoordinator = YES;
+    self.clientList.isCoordinator = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self.receiver startCapturing];
-  //  [self.transmitter startTransmitting];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -97,8 +95,6 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
 	[super viewDidDisappear:animated];
-    [self.receiver stopCapturing];
- //   [self.transmitter stopTransmitting];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -110,10 +106,23 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if(object != clientList) return;
     
-    self.role.text = clientList.isCoordinator ? @"Coordinator" : @"Slave";
+    if (clientList.isCoordinator) {
+        self.role.text =  @"Coordinator";
+        [self.receiver stopCapturing];
+        [self.transmitter startTransmitting];
+    } else {
+        self.role.text =  @"Slave";
+        [self.transmitter stopTransmitting];
+        [self.receiver startCapturing];
 
+    }
+    
+    
+    
+    
     
     self.status.text = clientList.isConnectedToCoordinator ? @"Totally connected" : @"Dude, no dice";
+
 }
 
 
@@ -126,8 +135,8 @@
     receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:audioFileURL];
     transmitter = [[CHAudioTransmitter alloc] initWithAudioFileToSend:audioFileURL];
     clientList = [[CHClientList alloc] init];
-    [clientList addObserver:self forKeyPath:@"isCoordinator" options:NSKeyValueObservingOptionNew context:NULL];
-    [clientList addObserver:self forKeyPath:@"isConnectedToCoordinator" options:NSKeyValueObservingOptionNew context:NULL];
+    [clientList addObserver:self forKeyPath:@"isCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
+    [clientList addObserver:self forKeyPath:@"isConnectedToCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
     return self;
 }
 
