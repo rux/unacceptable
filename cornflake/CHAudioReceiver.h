@@ -8,6 +8,9 @@
 
 #import <AVFoundation/AVFoundation.h>
 
+NSString* const CHAudioReceiverDidDetectSignal;
+
+
 @interface CHAudioReceiver : NSObject <AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (nonatomic,retain) AVCaptureSession* captureSession;

@@ -13,52 +13,37 @@
 #define SAMPLES_PER_CORRELATION 4096
 
 
-static AudioBufferList audioSearchBufferList;
-static vDSP_Length audioSearchBufferLength;
-static float* capturedAudio;
-static vDSP_Length capturedAudioLength;
+NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSignal";
+
+
+@interface CHAudioReceiver ()
+@property (nonatomic) float* correlatedResult;
+@property (nonatomic) AudioBufferList audioSearchBufferList;
+@property (nonatomic) vDSP_Length audioSearchBufferLength;
+@property (nonatomic) float* capturedAudio;
+@property (nonatomic) vDSP_Length capturedAudioLength;
+@property (nonatomic) CMTime captureBufferPresentationTime;
+@property (nonatomic) CMTime captureStartTime;
+@property (nonatomic) Float64 captureBufferDuration;
+@end
 
 @implementation CHAudioReceiver
 
 @synthesize captureSession, sampleQueue;
+@synthesize audioSearchBufferList, audioSearchBufferLength, capturedAudio, capturedAudioLength, correlatedResult;
+@synthesize captureBufferPresentationTime, captureBufferDuration, captureStartTime;
 
-- (id)initWithAudioToLookFor:(NSURL*)audioURL {
-    NSAssert(audioURL, @"Audio not supplied");
-    if(!(self = [super init])) {
-        return nil;
-    }
-    
-    captureSession = [[AVCaptureSession alloc] init];
-    
-    NSArray* mics = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
-    AVCaptureDevice* preferredMic = [mics lastObject];
+#pragma mark - Lifecycle
 
-    NSError* micError = nil;
-    AVCaptureDeviceInput* micInput = [AVCaptureDeviceInput deviceInputWithDevice:preferredMic error:&micError];
-    if(!micInput || ![captureSession canAddInput:micInput]) {
-        [captureSession release];
-        NSLog(@"Failed mic with error %@ ", micError);
-        [self release], self = nil;
-        return nil;
-    }
-    [captureSession addInput:micInput];
-    
-    AVCaptureAudioDataOutput* dataOutput = [[AVCaptureAudioDataOutput alloc] init];
-    sampleQueue = dispatch_queue_create("com.yell.audio.receive", DISPATCH_QUEUE_SERIAL);
-    [dataOutput setSampleBufferDelegate:self queue:sampleQueue];
-    [captureSession addOutput:dataOutput];
-    [dataOutput release];
-    
+- (BOOL)loadAudioDataFromURL:(NSURL*)audioURL {
     // Extract the audio 
     ExtAudioFileRef audioFile;
     OSStatus fileAccessError = ExtAudioFileOpenURL((CFURLRef)audioURL, &audioFile);
     if(fileAccessError != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileAccessError);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;
+        return NO;
     }
-        
+    
     AudioStreamBasicDescription inputFormat;
     UInt32 inputFormatSize = sizeof(inputFormat);
     ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileDataFormat, &inputFormatSize, &inputFormat);
@@ -68,24 +53,19 @@ static vDSP_Length capturedAudioLength;
     const OSStatus lengthStatus = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &numPacketsPropertySize, &numPackets);
     if(lengthStatus != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, lengthStatus);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;        
+        return NO;        
     }
-
     
     AudioStreamBasicDescription format = inputFormat;
     format.mFormatFlags = kAudioFormatFlagIsFloat;
     format.mBitsPerChannel = sizeof(float)*8;
     format.mBytesPerFrame = format.mChannelsPerFrame * sizeof(float);
     format.mBytesPerPacket = format.mFramesPerPacket * format.mBytesPerFrame;
-
+    
     OSStatus fileRetrievalError = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(format), &format);
     if(fileRetrievalError != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileRetrievalError);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;        
+        return NO;
     }
     
     float* audioSearchBuffer = (float*)calloc(numPackets, sizeof(float));
@@ -105,9 +85,7 @@ static vDSP_Length capturedAudioLength;
         if(readError != noErr) {
             NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, readError);
             ExtAudioFileDispose(audioFile);
-            [captureSession release];
-            [self release], self = nil;
-            return nil;        
+            return NO;
         }
         totalFramesRead += framesRead;
         if(framesRead == 0) {
@@ -116,7 +94,47 @@ static vDSP_Length capturedAudioLength;
     } while (totalFramesRead < numPackets);
     
     ExtAudioFileDispose(audioFile);
+    return YES;
+}
 
+- (id)initWithAudioToLookFor:(NSURL*)audioURL {
+    NSAssert(audioURL, @"Audio not supplied");
+    if(!(self = [super init])) {
+        return nil;
+    }
+    
+    if(![self loadAudioDataFromURL:audioURL]) {
+        [captureSession release];
+        [self release], self = nil;
+        return nil;
+    }
+    
+    captureSession = [[AVCaptureSession alloc] init];
+    
+    NSArray* mics = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
+    AVCaptureDevice* preferredMic = [mics lastObject];
+
+    NSError* micError = nil;
+    AVCaptureDeviceInput* micInput = [AVCaptureDeviceInput deviceInputWithDevice:preferredMic error:&micError];
+    if(!micInput || ![captureSession canAddInput:micInput]) {
+        [captureSession release];
+        NSLog(@"Failed mic with error %@ ", micError);
+        [self release], self = nil;
+        return nil;
+    }
+    [captureSession addInput:micInput];
+    
+    AVCaptureAudioDataOutput* dataOutput = [[[AVCaptureAudioDataOutput alloc] init] autorelease];
+    sampleQueue = dispatch_queue_create("com.yell.audio.receive", DISPATCH_QUEUE_SERIAL);
+    [dataOutput setSampleBufferDelegate:self queue:sampleQueue];
+    if(![captureSession canAddOutput:dataOutput]) {
+        [captureSession release];
+        NSLog(@"Failed output with error %@ ", micError);
+        [self release], self = nil;
+        return nil;
+    }
+    [captureSession addOutput:dataOutput];
+    
     return self;
 }
 
@@ -128,10 +146,14 @@ static vDSP_Length capturedAudioLength;
     if(sampleQueue) {
         dispatch_release(sampleQueue);
     }
+    
     [captureSession release];
     free(capturedAudio);
+    free(correlatedResult);
     [super dealloc];
 }
+
+#pragma mark - Capture control
 
 
 - (void)startCapturing {
@@ -142,8 +164,6 @@ static vDSP_Length capturedAudioLength;
     [self.captureSession stopRunning];
 }
 
-#pragma mark - Process audio
-
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
@@ -151,7 +171,10 @@ static vDSP_Length capturedAudioLength;
     
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-
+    const Float64 duration = CMTimeGetSeconds(CMSampleBufferGetDuration(sampleBuffer));
+    
+    const double arrivalTimeToSystemTime = CMTimeGetSeconds(CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)) - CACurrentMediaTime();
+    
     if(numSamples != 1024) {
         return;
     }
@@ -170,17 +193,27 @@ static vDSP_Length capturedAudioLength;
     float* normedSamples = calloc(numSamples, sizeof(float));
     float divisor = 32767.f;
     vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
+    free(readySamples);
     
     if(capturedAudioLength < SAMPLES_PER_CORRELATION) {
+        if(capturedAudioLength == 0) {
+            self.captureBufferPresentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            self.captureBufferDuration = 0;
+        }
         bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MIN(SAMPLES_PER_CORRELATION, numSamples));
+        free(normedSamples);
         capturedAudioLength += numSamples;
+        self.captureBufferDuration += duration; 
         return;
     }
+    free(normedSamples);
     capturedAudioLength = 0;
 
     // Prepare space for the correlated result.    
     const vDSP_Length correlatedResultLength = 2*SAMPLES_PER_CORRELATION - 1;
-    float* correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
+    if(!correlatedResult) {
+        correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
+    }
 
     // Correlate the two signals
     vDSP_conv(capturedAudio, 1, (float*)(audioSearchBufferList.mBuffers[0].mData), 1, correlatedResult, 1, correlatedResultLength, SAMPLES_PER_CORRELATION);
@@ -190,13 +223,17 @@ static vDSP_Length capturedAudioLength;
     vDSP_Length indexOfMaximumValue;
     vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, numSamples);
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-       NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
-    });    
-
-    free(correlatedResult);
-    free(readySamples);
-    free(normedSamples);
+#define kDetectionThreshold 5.0f
+    
+    const Float64 theTime = self.captureBufferDuration * ((Float64)(indexOfMaximumValue)/(Float64)(SAMPLES_PER_CORRELATION)) + arrivalTimeToSystemTime;
+    
+    if(maximumValue > kDetectionThreshold) {
+        NSDate* date = [NSDate dateWithTimeIntervalSinceNow:theTime];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSNotification* note = [NSNotification notificationWithName:CHAudioReceiverDidDetectSignal object:date];
+            [[NSNotificationCenter defaultCenter] postNotification:note];
+        });    
+    }    
 }
 
      
