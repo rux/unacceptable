@@ -147,6 +147,8 @@ static vDSP_Length capturedAudioLength;
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
+    return;
+    
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
 

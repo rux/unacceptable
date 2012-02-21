@@ -10,11 +10,10 @@
 
 @implementation CHViewController
 
-@synthesize button, receiver, transmitter, clientList;
+@synthesize button, receiver, transmitter, clientList, status, role, masterSwitch;
 
 - (IBAction)didTapButton:(id)sender {
-    self.clientList.isCoordinator = !self.clientList.isCoordinator;
-
+    
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef soundFileURLRef;
     soundFileURLRef = CFBundleCopyResourceURL(mainBundle, (CFStringRef)  @"cheer", CFSTR ("mp3"), NULL);
@@ -36,12 +35,20 @@
             [UIView animateWithDuration:3 animations:^{
                 self.view.backgroundColor = [UIColor blackColor];
             }];
-        }];
-    
-
+        }
+    ];
 }
 
 
+- (IBAction)masterSwitch:(id)sender {
+    if (masterSwitch.on) {
+        self.clientList.isCoordinator = YES;
+        self.view.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:219.0/255.0 blue:52.0/255.0 alpha:1.0];
+    } else {
+        self.clientList.isCoordinator = NO;
+        self.view.backgroundColor = [UIColor blackColor];
+    }
+}
 
 
 
@@ -72,6 +79,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    self.clientList.isCoordinator = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -99,6 +107,15 @@
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if(object != clientList) return;
+    
+    self.role.text = clientList.isCoordinator ? @"Coordinator" : @"Slave";
+
+    
+    self.status.text = clientList.isConnectedToCoordinator ? @"Totally connected" : @"Dude, no dice";
+}
+
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     if(!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
@@ -109,10 +126,14 @@
     receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:audioFileURL];
     transmitter = [[CHAudioTransmitter alloc] initWithAudioFileToSend:audioFileURL];
     clientList = [[CHClientList alloc] init];
+    [clientList addObserver:self forKeyPath:@"isCoordinator" options:NSKeyValueObservingOptionNew context:NULL];
+    [clientList addObserver:self forKeyPath:@"isConnectedToCoordinator" options:NSKeyValueObservingOptionNew context:NULL];
     return self;
 }
 
 - (void)dealloc {
+    [clientList removeObserver:self forKeyPath:@"isCoordinator"];
+    [clientList removeObserver:self forKeyPath:@"isConnectedToCoordinator"];
     [clientList release];
     [transmitter release];
     [receiver release];

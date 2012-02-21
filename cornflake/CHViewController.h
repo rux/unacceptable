@@ -23,4 +23,11 @@
 
 - (IBAction)didTapButton:(id)sender;
 
+@property (nonatomic,retain) IBOutlet UILabel* status; 
+@property (nonatomic,retain) IBOutlet UILabel* role; 
+
+@property (nonatomic,retain) IBOutlet UISwitch* masterSwitch; 
+
+
 @end
+
