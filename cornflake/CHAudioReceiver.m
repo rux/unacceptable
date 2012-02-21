@@ -22,43 +22,15 @@ static vDSP_Length capturedAudioLength;
 
 @synthesize captureSession, sampleQueue;
 
-- (id)initWithAudioToLookFor:(NSURL*)audioURL {
-    NSAssert(audioURL, @"Audio not supplied");
-    if(!(self = [super init])) {
-        return nil;
-    }
-    
-    captureSession = [[AVCaptureSession alloc] init];
-    
-    NSArray* mics = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
-    AVCaptureDevice* preferredMic = [mics lastObject];
-
-    NSError* micError = nil;
-    AVCaptureDeviceInput* micInput = [AVCaptureDeviceInput deviceInputWithDevice:preferredMic error:&micError];
-    if(!micInput || ![captureSession canAddInput:micInput]) {
-        [captureSession release];
-        NSLog(@"Failed mic with error %@ ", micError);
-        [self release], self = nil;
-        return nil;
-    }
-    [captureSession addInput:micInput];
-    
-    AVCaptureAudioDataOutput* dataOutput = [[AVCaptureAudioDataOutput alloc] init];
-    sampleQueue = dispatch_queue_create("com.yell.audio.receive", DISPATCH_QUEUE_SERIAL);
-    [dataOutput setSampleBufferDelegate:self queue:sampleQueue];
-    [captureSession addOutput:dataOutput];
-    [dataOutput release];
-    
+- (BOOL)loadAudioDataFromURL:(NSURL*)audioURL {
     // Extract the audio 
     ExtAudioFileRef audioFile;
     OSStatus fileAccessError = ExtAudioFileOpenURL((CFURLRef)audioURL, &audioFile);
     if(fileAccessError != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileAccessError);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;
+        return NO;
     }
-        
+    
     AudioStreamBasicDescription inputFormat;
     UInt32 inputFormatSize = sizeof(inputFormat);
     ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileDataFormat, &inputFormatSize, &inputFormat);
@@ -68,24 +40,20 @@ static vDSP_Length capturedAudioLength;
     const OSStatus lengthStatus = ExtAudioFileGetProperty(audioFile, kExtAudioFileProperty_FileLengthFrames, &numPacketsPropertySize, &numPackets);
     if(lengthStatus != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, lengthStatus);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;        
+        return NO;        
     }
-
+    
     
     AudioStreamBasicDescription format = inputFormat;
     format.mFormatFlags = kAudioFormatFlagIsFloat;
     format.mBitsPerChannel = sizeof(float)*8;
     format.mBytesPerFrame = format.mChannelsPerFrame * sizeof(float);
     format.mBytesPerPacket = format.mFramesPerPacket * format.mBytesPerFrame;
-
+    
     OSStatus fileRetrievalError = ExtAudioFileSetProperty(audioFile, kExtAudioFileProperty_ClientDataFormat, sizeof(format), &format);
     if(fileRetrievalError != noErr) {
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, fileRetrievalError);
-        [captureSession release];
-        [self release], self = nil;
-        return nil;        
+        return NO;
     }
     
     float* audioSearchBuffer = (float*)calloc(numPackets, sizeof(float));
@@ -105,9 +73,7 @@ static vDSP_Length capturedAudioLength;
         if(readError != noErr) {
             NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, readError);
             ExtAudioFileDispose(audioFile);
-            [captureSession release];
-            [self release], self = nil;
-            return nil;        
+            return NO;
         }
         totalFramesRead += framesRead;
         if(framesRead == 0) {
@@ -116,7 +82,47 @@ static vDSP_Length capturedAudioLength;
     } while (totalFramesRead < numPackets);
     
     ExtAudioFileDispose(audioFile);
+    return YES;
+}
 
+- (id)initWithAudioToLookFor:(NSURL*)audioURL {
+    NSAssert(audioURL, @"Audio not supplied");
+    if(!(self = [super init])) {
+        return nil;
+    }
+    
+    if(![self loadAudioDataFromURL:audioURL]) {
+        [captureSession release];
+        [self release], self = nil;
+        return nil;
+    }
+    
+    captureSession = [[AVCaptureSession alloc] init];
+    
+    NSArray* mics = [AVCaptureDevice devicesWithMediaType:AVMediaTypeAudio];
+    AVCaptureDevice* preferredMic = [mics lastObject];
+
+    NSError* micError = nil;
+    AVCaptureDeviceInput* micInput = [AVCaptureDeviceInput deviceInputWithDevice:preferredMic error:&micError];
+    if(!micInput || ![captureSession canAddInput:micInput]) {
+        [captureSession release];
+        NSLog(@"Failed mic with error %@ ", micError);
+        [self release], self = nil;
+        return nil;
+    }
+    [captureSession addInput:micInput];
+    
+    AVCaptureAudioDataOutput* dataOutput = [[[AVCaptureAudioDataOutput alloc] init] autorelease];
+    sampleQueue = dispatch_queue_create("com.yell.audio.receive", DISPATCH_QUEUE_SERIAL);
+    [dataOutput setSampleBufferDelegate:self queue:sampleQueue];
+    if(![captureSession canAddOutput:dataOutput]) {
+        [captureSession release];
+        NSLog(@"Failed output with error %@ ", micError);
+        [self release], self = nil;
+        return nil;
+    }
+    [captureSession addOutput:dataOutput];
+    
     return self;
 }
 
@@ -188,10 +194,12 @@ static vDSP_Length capturedAudioLength;
     vDSP_Length indexOfMaximumValue;
     vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, numSamples);
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-       NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
-    });    
-
+    if(maximumValue > 5.0f) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
+        });    
+    }
+    
     free(correlatedResult);
     free(readySamples);
     free(normedSamples);
