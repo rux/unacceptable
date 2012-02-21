@@ -12,15 +12,18 @@
 
 #define SAMPLES_PER_CORRELATION 4096
 
-
-static AudioBufferList audioSearchBufferList;
-static vDSP_Length audioSearchBufferLength;
-static float* capturedAudio;
-static vDSP_Length capturedAudioLength;
+@interface CHAudioReceiver ()
+@property (nonatomic) float* correlatedResult;
+@property (nonatomic) AudioBufferList audioSearchBufferList;
+@property (nonatomic) vDSP_Length audioSearchBufferLength;
+@property (nonatomic) float* capturedAudio;
+@property (nonatomic) vDSP_Length capturedAudioLength;
+@end
 
 @implementation CHAudioReceiver
 
 @synthesize captureSession, sampleQueue;
+@synthesize audioSearchBufferList, audioSearchBufferLength, capturedAudio, capturedAudioLength, correlatedResult;
 
 - (BOOL)loadAudioDataFromURL:(NSURL*)audioURL {
     // Extract the audio 
@@ -42,7 +45,6 @@ static vDSP_Length capturedAudioLength;
         NSLog(@"Failed to access asset at URL %@ due to error %ld", audioURL, lengthStatus);
         return NO;        
     }
-    
     
     AudioStreamBasicDescription format = inputFormat;
     format.mFormatFlags = kAudioFormatFlagIsFloat;
@@ -134,8 +136,10 @@ static vDSP_Length capturedAudioLength;
     if(sampleQueue) {
         dispatch_release(sampleQueue);
     }
+    
     [captureSession release];
     free(capturedAudio);
+    free(correlatedResult);
     [super dealloc];
 }
 
@@ -174,17 +178,21 @@ static vDSP_Length capturedAudioLength;
     float* normedSamples = calloc(numSamples, sizeof(float));
     float divisor = 32767.f;
     vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
-    
+    free(readySamples);
     if(capturedAudioLength < SAMPLES_PER_CORRELATION) {
         bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MIN(SAMPLES_PER_CORRELATION, numSamples));
+        free(normedSamples);
         capturedAudioLength += numSamples;
         return;
     }
+    free(normedSamples);
     capturedAudioLength = 0;
 
     // Prepare space for the correlated result.    
     const vDSP_Length correlatedResultLength = 2*SAMPLES_PER_CORRELATION - 1;
-    float* correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
+    if(!correlatedResult) {
+        correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
+    }
 
     // Correlate the two signals
     vDSP_conv(capturedAudio, 1, (float*)(audioSearchBufferList.mBuffers[0].mData), 1, correlatedResult, 1, correlatedResultLength, SAMPLES_PER_CORRELATION);
@@ -198,11 +206,7 @@ static vDSP_Length capturedAudioLength;
         dispatch_async(dispatch_get_main_queue(), ^{
             NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
         });    
-    }
-    
-    free(correlatedResult);
-    free(readySamples);
-    free(normedSamples);
+    }    
 }
 
      
