@@ -10,8 +10,13 @@
 #import <Accelerate/Accelerate.h>
 #import "CHAudioReceiver.h"
 
+#define SAMPLES_PER_CORRELATION 4096
+
+
 static AudioBufferList audioSearchBufferList;
 static vDSP_Length audioSearchBufferLength;
+static float* capturedAudio;
+static vDSP_Length capturedAudioLength;
 
 @implementation CHAudioReceiver
 
@@ -88,7 +93,7 @@ static vDSP_Length audioSearchBufferLength;
     audioSearchBufferLength = numPackets;
     audioSearchBufferList.mNumberBuffers = 1;
     audioSearchBufferList.mBuffers[0].mNumberChannels = 1; 
-    audioSearchBufferList.mBuffers[0].mDataByteSize = numPackets * sizeof(float);
+    audioSearchBufferList.mBuffers[0].mDataByteSize = numPackets * format.mBytesPerPacket;
     audioSearchBufferList.mBuffers[0].mData = audioSearchBuffer;
     
     ExtAudioFileSeek(audioFile, 0);
@@ -124,6 +129,7 @@ static vDSP_Length audioSearchBufferLength;
         dispatch_release(sampleQueue);
     }
     [captureSession release];
+    free(capturedAudio);
     [super dealloc];
 }
 
@@ -140,9 +146,17 @@ static vDSP_Length audioSearchBufferLength;
 
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
-- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
+
+    if(numSamples != 1024) {
+        return;
+    }
+    
+    if(!capturedAudio) {
+        capturedAudio = (float*)calloc(SAMPLES_PER_CORRELATION, sizeof(float));
+    }
 
     // Obtain the raw sample data as a float array, readySamples.
 	size_t lengthAtOffset = 0;
@@ -155,24 +169,29 @@ static vDSP_Length audioSearchBufferLength;
     float divisor = 32767.f;
     vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
     
+    if(capturedAudioLength < SAMPLES_PER_CORRELATION) {
+        bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MIN(SAMPLES_PER_CORRELATION, numSamples));
+        capturedAudioLength += numSamples;
+        return;
+    }
+    capturedAudioLength = 0;
+
     // Prepare space for the correlated result.    
-    const vDSP_Length correlatedResultLength = audioSearchBufferLength + numSamples - 1;
+    const vDSP_Length correlatedResultLength = 2*SAMPLES_PER_CORRELATION - 1;
     float* correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
 
     // Correlate the two signals
-    vDSP_conv(normedSamples, 1, audioSearchBufferList.mBuffers[0].mData, 1, correlatedResult, 1, correlatedResultLength, audioSearchBufferLength);
+    vDSP_conv(capturedAudio, 1, (float*)(audioSearchBufferList.mBuffers[0].mData), 1, correlatedResult, 1, correlatedResultLength, SAMPLES_PER_CORRELATION);
         
     // Find the maximum and its index
     float maximumValue;
     vDSP_Length indexOfMaximumValue;
-    vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, correlatedResultLength);
-//    vDSP_maxvi(readySamples, 1, &maximumValue, &indexOfMaximumValue, numSamples);
-//    vDSP_maxvi(audioSearchBufferList.mBuffers[0].mData, 1, &maximumValue, &indexOfMaximumValue, audioSearchBufferLength);
-    
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
-        });    
-    
+    vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, numSamples);
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+       NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
+    });    
+
     free(correlatedResult);
     free(readySamples);
     free(normedSamples);
