@@ -10,10 +10,10 @@
 
 @implementation CHViewController
 
-@synthesize button, receiver;
+@synthesize button, receiver, transmitter, clientList;
 
 - (IBAction)didTapButton:(id)sender {
-
+    self.clientList.isCoordinator = !self.clientList.isCoordinator;
 
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef soundFileURLRef;
@@ -78,6 +78,7 @@
 {
     [super viewDidAppear:animated];
     [self.receiver startCapturing];
+  //  [self.transmitter startTransmitting];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -89,6 +90,7 @@
 {
 	[super viewDidDisappear:animated];
     [self.receiver stopCapturing];
+ //   [self.transmitter stopTransmitting];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -102,12 +104,17 @@
     if(!(self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil])) {
         return nil;
     }
-    
-    receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:nil];
+
+    NSURL* audioFileURL =  [[NSBundle mainBundle] URLForResource:@"880-1760-0.1second" withExtension:@"caf"];   
+    receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:audioFileURL];
+    transmitter = [[CHAudioTransmitter alloc] initWithAudioFileToSend:audioFileURL];
+    clientList = [[CHClientList alloc] init];
     return self;
 }
 
 - (void)dealloc {
+    [clientList release];
+    [transmitter release];
     [receiver release];
     [button release];
     [super dealloc];

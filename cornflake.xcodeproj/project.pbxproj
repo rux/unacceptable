@@ -30,6 +30,8 @@
 		CE8CD50C14F2614800406F31 /* CHViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD50A14F2614800406F31 /* CHViewController.xib */; };
 		CE8CD51314F26B8300406F31 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE8CD51214F26B8300406F31 /* AudioToolbox.framework */; };
 		CE8CD51714F2712F00406F31 /* cheer.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = CE8CD51614F2712F00406F31 /* cheer.mp3 */; };
+		E259AC5814F31BA1007C08E1 /* CHClientList.m in Sources */ = {isa = PBXBuildFile; fileRef = E259AC5714F31BA1007C08E1 /* CHClientList.m */; };
+		E259AC5B14F31BF3007C08E1 /* GameKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E259AC5A14F31BF3007C08E1 /* GameKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +65,9 @@
 		CE8CD50B14F2614800406F31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/CHViewController.xib; sourceTree = "<group>"; };
 		CE8CD51214F26B8300406F31 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		CE8CD51614F2712F00406F31 /* cheer.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = cheer.mp3; sourceTree = "<group>"; };
+		E259AC5614F31BA1007C08E1 /* CHClientList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CHClientList.h; sourceTree = "<group>"; };
+		E259AC5714F31BA1007C08E1 /* CHClientList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CHClientList.m; sourceTree = "<group>"; };
+		E259AC5A14F31BF3007C08E1 /* GameKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameKit.framework; path = System/Library/Frameworks/GameKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E259AC5B14F31BF3007C08E1 /* GameKit.framework in Frameworks */,
 				199B63CC14F270340054A927 /* CoreMedia.framework in Frameworks */,
 				199B63CA14F26F350054A927 /* Accelerate.framework in Frameworks */,
 				199B63C814F26EBD0054A927 /* AVFoundation.framework in Frameworks */,
@@ -118,6 +124,7 @@
 		CE8CD4F414F2614800406F31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E259AC5A14F31BF3007C08E1 /* GameKit.framework */,
 				199B63CB14F270340054A927 /* CoreMedia.framework */,
 				199B63C914F26F350054A927 /* Accelerate.framework */,
 				199B63C714F26EBD0054A927 /* AVFoundation.framework */,
@@ -132,6 +139,8 @@
 		CE8CD4FB14F2614800406F31 /* cornflake */ = {
 			isa = PBXGroup;
 			children = (
+				E259AC5614F31BA1007C08E1 /* CHClientList.h */,
+				E259AC5714F31BA1007C08E1 /* CHClientList.m */,
 				CE8CD50414F2614800406F31 /* CHAppDelegate.h */,
 				CE8CD50514F2614800406F31 /* CHAppDelegate.m */,
 				CE8CD50714F2614800406F31 /* CHViewController.h */,
@@ -235,6 +244,7 @@
 				CE8CD50914F2614800406F31 /* CHViewController.m in Sources */,
 				199B63C314F269350054A927 /* CHAudioTransmitter.m in Sources */,
 				199B63C614F2694E0054A927 /* CHAudioReceiver.m in Sources */,
+				E259AC5814F31BA1007C08E1 /* CHClientList.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -279,7 +289,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -296,7 +306,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.2;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
