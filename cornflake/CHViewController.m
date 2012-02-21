@@ -10,10 +10,10 @@
 
 @implementation CHViewController
 
-@synthesize button, receiver, transmitter;
+@synthesize button, receiver, transmitter, clientList;
 
 - (IBAction)didTapButton:(id)sender {
-
+    self.clientList.isCoordinator = !self.clientList.isCoordinator;
 
     CFBundleRef mainBundle = CFBundleGetMainBundle();
     CFURLRef soundFileURLRef;
@@ -107,10 +107,12 @@
     NSURL* audioFileURL =  [[NSBundle mainBundle] URLForResource:@"880-1760-0.1second" withExtension:@"caf"];   
     receiver = [[CHAudioReceiver alloc] initWithAudioToLookFor:audioFileURL];
     transmitter = [[CHAudioTransmitter alloc] initWithAudioFileToSend:audioFileURL];
+    clientList = [[CHClientList alloc] init];
     return self;
 }
 
 - (void)dealloc {
+    [clientList release];
     [transmitter release];
     [receiver release];
     [button release];
