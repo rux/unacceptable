@@ -44,9 +44,11 @@
     if (masterSwitch.on) {
         self.clientList.isCoordinator = YES;
         self.view.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:219.0/255.0 blue:52.0/255.0 alpha:1.0];
+        button.hidden = NO;
     } else {
         self.clientList.isCoordinator = NO;
         self.view.backgroundColor = [UIColor blackColor];
+        button.hidden = YES;
     }
 }
 
