@@ -12,18 +12,28 @@
 
 #define SAMPLES_PER_CORRELATION 4096
 
+
+NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSignal";
+
+
 @interface CHAudioReceiver ()
 @property (nonatomic) float* correlatedResult;
 @property (nonatomic) AudioBufferList audioSearchBufferList;
 @property (nonatomic) vDSP_Length audioSearchBufferLength;
 @property (nonatomic) float* capturedAudio;
 @property (nonatomic) vDSP_Length capturedAudioLength;
+@property (nonatomic) CMTime captureBufferPresentationTime;
+@property (nonatomic) CMTime captureStartTime;
+@property (nonatomic) Float64 captureBufferDuration;
 @end
 
 @implementation CHAudioReceiver
 
 @synthesize captureSession, sampleQueue;
 @synthesize audioSearchBufferList, audioSearchBufferLength, capturedAudio, capturedAudioLength, correlatedResult;
+@synthesize captureBufferPresentationTime, captureBufferDuration, captureStartTime;
+
+#pragma mark - Lifecycle
 
 - (BOOL)loadAudioDataFromURL:(NSURL*)audioURL {
     // Extract the audio 
@@ -143,6 +153,8 @@
     [super dealloc];
 }
 
+#pragma mark - Capture control
+
 
 - (void)startCapturing {
     [self.captureSession startRunning];
@@ -152,14 +164,15 @@
     [self.captureSession stopRunning];
 }
 
-#pragma mark - Process audio
-
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
-
+    const Float64 duration = CMTimeGetSeconds(CMSampleBufferGetDuration(sampleBuffer));
+    
+    const double arrivalTimeToSystemTime = CMTimeGetSeconds(CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)) - CACurrentMediaTime();
+    
     if(numSamples != 1024) {
         return;
     }
@@ -179,10 +192,16 @@
     float divisor = 32767.f;
     vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
     free(readySamples);
+    
     if(capturedAudioLength < SAMPLES_PER_CORRELATION) {
+        if(capturedAudioLength == 0) {
+            self.captureBufferPresentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
+            self.captureBufferDuration = 0;
+        }
         bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MIN(SAMPLES_PER_CORRELATION, numSamples));
         free(normedSamples);
         capturedAudioLength += numSamples;
+        self.captureBufferDuration += duration; 
         return;
     }
     free(normedSamples);
@@ -202,9 +221,15 @@
     vDSP_Length indexOfMaximumValue;
     vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, numSamples);
 
-    if(maximumValue > 5.0f) {
+#define kDetectionThreshold 5.0f
+    
+    const Float64 theTime = self.captureBufferDuration * ((Float64)(indexOfMaximumValue)/(Float64)(SAMPLES_PER_CORRELATION)) + arrivalTimeToSystemTime;
+    
+    if(maximumValue > kDetectionThreshold) {
+        NSDate* date = [NSDate dateWithTimeIntervalSinceNow:theTime];
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSLog(@"Matched %f at index %lu", maximumValue, indexOfMaximumValue);
+            NSNotification* note = [NSNotification notificationWithName:CHAudioReceiverDidDetectSignal object:date];
+            [[NSNotificationCenter defaultCenter] postNotification:note];
         });    
     }    
 }
