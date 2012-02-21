@@ -167,6 +167,8 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
+    return;
+    
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
     const Float64 duration = CMTimeGetSeconds(CMSampleBufferGetDuration(sampleBuffer));
