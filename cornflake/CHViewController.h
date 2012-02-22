@@ -19,15 +19,15 @@
 @property (nonatomic,retain) CHAudioTransmitter* transmitter;
 @property (nonatomic,retain) CHClientList* clientList;
 
-@property (nonatomic,retain) IBOutlet UIButton* button; 
-
 - (IBAction)didTapButton:(id)sender;
 
+- (IBAction)didChangeSensitivity:(UISlider*)sender;
+
+@property (nonatomic,retain) IBOutlet UISlider* sensitivitySlider;
 @property (nonatomic,retain) IBOutlet UILabel* status; 
 @property (nonatomic,retain) IBOutlet UILabel* role; 
-
 @property (nonatomic,retain) IBOutlet UISwitch* masterSwitch; 
-
+@property (nonatomic,retain) IBOutlet UILabel* sensitivityLabel;
 
 @end
 

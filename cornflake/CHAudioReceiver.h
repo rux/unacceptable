@@ -16,6 +16,8 @@ NSString* const CHAudioReceiverDidDetectSignal;
 @property (nonatomic,retain) AVCaptureSession* captureSession;
 @property (nonatomic) dispatch_queue_t sampleQueue;
 
+@property float detectionThreshold;
+
 - (id)initWithAudioToLookFor:(NSURL*)audioToLookFor;
 
 - (void)startCapturing;

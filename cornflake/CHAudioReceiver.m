@@ -29,6 +29,7 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
 
 @implementation CHAudioReceiver
 
+@synthesize detectionThreshold;
 @synthesize captureSession, sampleQueue;
 @synthesize audioSearchBufferList, audioSearchBufferLength, capturedAudio, capturedAudioLength, correlatedResult;
 @synthesize captureBufferPresentationTime, captureBufferDuration, captureStartTime;
@@ -92,7 +93,7 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
             break;
         }
     } while (totalFramesRead < numPackets);
-    
+    NSLog(@"%lld", numPackets);
     ExtAudioFileDispose(audioFile);
     return YES;
 }
@@ -103,6 +104,9 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
         return nil;
     }
     
+#define kDetectionThreshold 2.5f
+    detectionThreshold = kDetectionThreshold;
+        
     if(![self loadAudioDataFromURL:audioURL]) {
         [captureSession release];
         [self release], self = nil;
@@ -167,7 +171,6 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
 #pragma mark - AVCaptureAudioDataOutputSampleBufferDelegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {    
-    return;
     
 	CMItemCount numSamples = CMSampleBufferGetNumSamples(sampleBuffer);
 	CMBlockBufferRef audioBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer);
@@ -180,7 +183,7 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
     }
     
     if(!capturedAudio) {
-        capturedAudio = (float*)calloc(SAMPLES_PER_CORRELATION, sizeof(float));
+        capturedAudio = (float*)calloc(2*SAMPLES_PER_CORRELATION, sizeof(float));
     }
 
     // Obtain the raw sample data as a float array, readySamples.
@@ -195,12 +198,12 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
     vDSP_vsdiv(readySamples, 1, &divisor, normedSamples, 1, numSamples);
     free(readySamples);
     
-    if(capturedAudioLength < SAMPLES_PER_CORRELATION) {
+    if(capturedAudioLength < 2*SAMPLES_PER_CORRELATION) {
         if(capturedAudioLength == 0) {
             self.captureBufferPresentationTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
             self.captureBufferDuration = 0;
         }
-        bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MIN(SAMPLES_PER_CORRELATION, numSamples));
+        bcopy(normedSamples, ((void*)&(capturedAudio[capturedAudioLength])), sizeof(float) * MAX(0, MIN((2*SAMPLES_PER_CORRELATION - capturedAudioLength), numSamples)));
         free(normedSamples);
         capturedAudioLength += numSamples;
         self.captureBufferDuration += duration; 
@@ -210,11 +213,11 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
     capturedAudioLength = 0;
 
     // Prepare space for the correlated result.    
-    const vDSP_Length correlatedResultLength = 2*SAMPLES_PER_CORRELATION - 1;
+    const vDSP_Length correlatedResultLength = SAMPLES_PER_CORRELATION;
     if(!correlatedResult) {
         correlatedResult = (float*)calloc(correlatedResultLength, sizeof(float));
     }
-
+    
     // Correlate the two signals
     vDSP_conv(capturedAudio, 1, (float*)(audioSearchBufferList.mBuffers[0].mData), 1, correlatedResult, 1, correlatedResultLength, SAMPLES_PER_CORRELATION);
         
@@ -222,14 +225,13 @@ NSString* const CHAudioReceiverDidDetectSignal = @"CHAudioReceiverDidDetectSigna
     float maximumValue;
     vDSP_Length indexOfMaximumValue;
     vDSP_maxvi(correlatedResult, 1, &maximumValue, &indexOfMaximumValue, numSamples);
-
-#define kDetectionThreshold 5.0f
     
     const Float64 theTime = self.captureBufferDuration * ((Float64)(indexOfMaximumValue)/(Float64)(SAMPLES_PER_CORRELATION)) + arrivalTimeToSystemTime;
     
-    if(maximumValue > kDetectionThreshold) {
+    if(maximumValue > self.detectionThreshold) {
         NSDate* date = [NSDate dateWithTimeIntervalSinceNow:theTime];
         dispatch_async(dispatch_get_main_queue(), ^{
+            NSLog(@"%f at %ld", maximumValue, indexOfMaximumValue);
             NSNotification* note = [NSNotification notificationWithName:CHAudioReceiverDidDetectSignal object:date];
             [[NSNotificationCenter defaultCenter] postNotification:note];
         });    

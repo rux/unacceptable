@@ -10,7 +10,12 @@
 
 @implementation CHViewController
 
-@synthesize button, receiver, transmitter, clientList, status, role, masterSwitch;
+@synthesize receiver, transmitter, clientList, status, role, masterSwitch, sensitivitySlider, sensitivityLabel;
+
+- (IBAction)didChangeSensitivity:(UISlider*)sender {
+    const float sensitivity = 1.0f + (1.0f - sender.value) * 9.0f;
+    self.receiver.detectionThreshold = sensitivity;
+}
 
 - (IBAction)didTapButton:(id)sender {
     
@@ -20,10 +25,13 @@
     UInt32 soundID;
     AudioServicesCreateSystemSoundID(soundFileURLRef, &soundID);
     AudioServicesPlaySystemSound(soundID);
+    AudioServicesDisposeSystemSoundID(soundID);
 
     AudioServicesPlaySystemSound (kSystemSoundID_Vibrate);
 
     [UIView animateWithDuration:1
+                          delay:0
+                        options:UIViewAnimationOptionAllowUserInteraction
         animations:^{
             if (![self.view.backgroundColor isEqual:[UIColor whiteColor]]) {
             self.view.backgroundColor = [UIColor whiteColor];
@@ -44,11 +52,9 @@
     if (masterSwitch.on) {
         self.clientList.isCoordinator = YES;
         self.view.backgroundColor = [UIColor colorWithRed:255.0/255.0 green:219.0/255.0 blue:52.0/255.0 alpha:1.0];
-        button.hidden = NO;
     } else {
         self.clientList.isCoordinator = NO;
         self.view.backgroundColor = [UIColor blackColor];
-        button.hidden = YES;
     }
 }
 
@@ -73,15 +79,19 @@
 - (void)viewDidUnload
 {
     [super viewDidUnload];
-    self.button = nil;
     // Release any retained subviews of the main view.
     // e.g. self.myOutlet = nil;
+    self.sensitivitySlider = nil;
+    self.status = nil;
+    self.role = nil;
+    self.sensitivityLabel = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     self.clientList.isCoordinator = NO;
+    self.sensitivitySlider.value = MAX(MIN(1.0f - (self.receiver.detectionThreshold - 1.0f) / 9.0f, 1.0f), 0.0f);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -102,28 +112,31 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-    return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
+    return (interfaceOrientation == UIInterfaceOrientationPortrait || interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if(object != clientList) return;
     
     if (clientList.isCoordinator) {
-        self.role.text =  @"Coordinator";
+        self.status.text = @"Sending waves";
+        self.status.textColor = [UIColor blackColor];
+        self.sensitivityLabel.hidden = YES;
+        self.sensitivitySlider.hidden = YES;
+        self.role.text =  @"Waver";
+        self.role.textColor = [UIColor blackColor];
         [self.receiver stopCapturing];
         [self.transmitter startTransmitting];
     } else {
-        self.role.text =  @"Slave";
+        self.status.text = clientList.isConnectedToCoordinator ? @"Talking to waver" : @"Listening for waver";
+        self.status.textColor = [UIColor whiteColor];
+        self.sensitivityLabel.hidden = NO;
+        self.sensitivitySlider.hidden = NO;
+        self.role.text =  @"Wavee";
+        self.role.textColor = [UIColor whiteColor];
         [self.transmitter stopTransmitting];
         [self.receiver startCapturing];
-
     }
-    
-    
-    
-    
-    
-    self.status.text = clientList.isConnectedToCoordinator ? @"Totally connected" : @"Dude, no dice";
 
 }
 
@@ -139,16 +152,20 @@
     clientList = [[CHClientList alloc] init];
     [clientList addObserver:self forKeyPath:@"isCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
     [clientList addObserver:self forKeyPath:@"isConnectedToCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didTapButton:) name:CHAudioReceiverDidDetectSignal object:nil];
     return self;
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [clientList removeObserver:self forKeyPath:@"isCoordinator"];
     [clientList removeObserver:self forKeyPath:@"isConnectedToCoordinator"];
     [clientList release];
     [transmitter release];
     [receiver release];
-    [button release];
+    [sensitivitySlider release];
+    [sensitivityLabel release];
     [super dealloc];
 }
 
