@@ -28,6 +28,8 @@
 @property (nonatomic,retain) IBOutlet UILabel* role; 
 @property (nonatomic,retain) IBOutlet UISwitch* masterSwitch; 
 @property (nonatomic,retain) IBOutlet UILabel* sensitivityLabel;
+@property (nonatomic,retain) IBOutlet UIButton* initiateWave;
+
 
 @end
 

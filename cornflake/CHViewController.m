@@ -10,7 +10,7 @@
 
 @implementation CHViewController
 
-@synthesize receiver, transmitter, clientList, status, role, masterSwitch, sensitivitySlider, sensitivityLabel;
+@synthesize receiver, transmitter, clientList, status, role, masterSwitch, sensitivitySlider, sensitivityLabel, initiateWave;
 
 - (IBAction)didChangeSensitivity:(UISlider*)sender {
     const float sensitivity = 1.0f + (1.0f - sender.value) * 9.0f;
@@ -123,6 +123,7 @@
         self.status.textColor = [UIColor blackColor];
         self.sensitivityLabel.hidden = YES;
         self.sensitivitySlider.hidden = YES;
+        self.initiateWave.hidden = NO;
         self.role.text =  @"Waver";
         self.role.textColor = [UIColor blackColor];
         [self.receiver stopCapturing];
@@ -132,10 +133,15 @@
         self.status.textColor = [UIColor whiteColor];
         self.sensitivityLabel.hidden = NO;
         self.sensitivitySlider.hidden = NO;
+        self.initiateWave.hidden = YES;
         self.role.text =  @"Wavee";
         self.role.textColor = [UIColor whiteColor];
         [self.transmitter stopTransmitting];
         [self.receiver startCapturing];
+    }
+    
+    if (clientList.peerTimes) {
+        self.initiateWave.titleLabel.text = [NSString stringWithFormat:@"%d clients connected", clientList.peerTimes.count];
     }
 
 }
@@ -152,6 +158,7 @@
     clientList = [[CHClientList alloc] init];
     [clientList addObserver:self forKeyPath:@"isCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
     [clientList addObserver:self forKeyPath:@"isConnectedToCoordinator" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
+    [clientList addObserver:self forKeyPath:@"peerTimes" options:NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew context:NULL];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didTapButton:) name:CHAudioReceiverDidDetectSignal object:nil];
     return self;
@@ -161,6 +168,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [clientList removeObserver:self forKeyPath:@"isCoordinator"];
     [clientList removeObserver:self forKeyPath:@"isConnectedToCoordinator"];
+    [clientList removeObserver:self forKeyPath:@"peerTimes"];
     [clientList release];
     [transmitter release];
     [receiver release];
